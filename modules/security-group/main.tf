@@ -1,0 +1,64 @@
+resource "aws_security_group" "web_sg" {
+    description = "web security group"
+    vpc_id = var.vpc_id
+    
+    ingress {
+        description = "ssh"
+        protocol    = "tcp"
+        from_port   = 22
+        to_port     = 22
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "http"
+        protocol = "tcp"
+        from_port = 80
+        to_port = 80
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        description = "https"
+        protocol = "tcp"
+        from_port = 443
+        to_port = 443
+        cidr_blocks = ["0.0.0.0/0"]    
+}
+    egress {
+        description = "all"
+        protocol = "-1"
+        from_port = 0
+        to_port = 0
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "web-sg"
+    }
+
+}
+
+resource "aws_security_group" "app_sg" {
+    description = "app security group"
+    vpc_id = var.vpc_id
+    
+    ingress {
+        description = "app port from web SG"
+        protocol = "tcp"
+        from_port = var.app_port
+        to_port = var.app_port
+        security_groups = [aws_security_group.web_sg.id]
+    }
+
+    egress {
+        description = "all"
+        protocol = "-1"
+        from_port = 0
+        to_port = 0
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = {
+        Name = "app-sg"
+    }
+}

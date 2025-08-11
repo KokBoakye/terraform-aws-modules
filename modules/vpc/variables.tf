@@ -23,11 +23,6 @@ variable "aws_region" {
     default = "eu-north-1"
 }
 
-variable "availability_zones" {
-    description = "List of availability zones for the VPC"
-    type = list(string)
-    default = ["eu-north-1a", "eu-north-1b"]
-}
 
 variable "user" {
     description = "User for the AWS resources"

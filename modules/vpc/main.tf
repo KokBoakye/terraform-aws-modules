@@ -1,5 +1,6 @@
 resource "aws_vpc" "master_vpc" {
     cidr_block = var.vpc_cidr_block
+    
     tags = {
         name = "${var.environment[0]}_${var.user}_vpc"
     }
@@ -11,7 +12,7 @@ resource "aws_subnet" "public_subnet" {
 
   vpc_id            = aws_vpc.master_vpc.id
   cidr_block        = var.public_subnet_cidr_block[count.index]
-  availability_zone = var.availability_zones[count.index]
+ 
 
   tags = {
     Name = "${var.environment[count.index]}_${var.user}_public_subnet"
@@ -25,8 +26,7 @@ resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.master_vpc.id
   cidr_block = var.private_subnet_cidr_block[count.index]
 
-  # Assign AZ based on environment index (integer division)
-  availability_zone = var.availability_zones[floor(count.index / 2)]
+ 
 
   tags = {
     Name = "${var.environment[floor(count.index / 2)]}_${var.user}_private_subnet_${count.index % 2 + 1}"

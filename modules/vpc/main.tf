@@ -26,10 +26,10 @@ resource "aws_subnet" "private_subnet" {
   cidr_block = var.private_subnet_cidr_block[count.index]
 
   # Assign AZ based on environment index (integer division)
-  availability_zone = var.availability_zones[count.index / 2]
+  availability_zone = var.availability_zones[floor(count.index / 2)]
 
   tags = {
-    Name = "${var.environment[count.index / 2]}_${var.user}_private_subnet_${count.index % 2 + 1}"
+    Name = "${var.environment[floor(count.index / 2)]}_${var.user}_private_subnet_${count.index % 2 + 1}"
   }
 }
 

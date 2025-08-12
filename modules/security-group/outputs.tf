@@ -12,3 +12,8 @@ output "alb_sg_id" {
   description = "ID of the app security group"
   value       = aws_security_group.alb_sg.id
 }
+
+output "bastion_sg_id" {
+  description = "ID of the bastion host security group"
+  value       = aws_security_group.bastion_sg.id
+}

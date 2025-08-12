@@ -65,3 +65,8 @@ variable "security_group" {
     
   
 }
+
+variable "bastion_security_group" {
+    description = "Security group for the bastion host"
+    type = string
+}

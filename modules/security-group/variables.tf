@@ -16,3 +16,7 @@ variable "app_port" {
     type = number
     default = 8080
 }
+
+data "http" "my_ip" {
+  url = "https://checkip.amazonaws.com"
+}

@@ -135,3 +135,13 @@ resource "aws_lb_target_group" "project_x_target_group" {
         Name = "project_x_target_group"
     }
 }
+
+resource "aws_db_subnet_group" "private_db_subnet_group" {
+    name       = "project-x-db-subnet-group"
+    subnet_ids = aws_subnet.private_subnet[*].id
+    description = "Subnet group for Project X database"
+
+    tags = {
+        Name = "project_x_db_subnet_group"
+    }
+}

@@ -81,7 +81,7 @@ resource "aws_db_instance" "db_instance" {
     storage_type = "gp2"
     username = var.db_username
     password = var.db_password 
-    db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+    db_subnet_group_name = var.private_db_subnet_group
     vpc_security_group_ids = [var.private_security_group.id]
     skip_final_snapshot = true
     tags = {

@@ -80,3 +80,20 @@ variable "private_security_group" {
     description = "Security group for the private servers"
     type = list(string)
 }
+
+variable "db_username" {
+    description = "Username for the database"
+    type = string
+    default = "admin"
+}
+
+variable "db_password" {
+    description = "Password for the database"
+    type = string
+    default = "password123" # Replace with your actual password
+}
+
+variable "private_db_subnet_group" {
+    description = "Private DB subnet group"
+    type = string
+}

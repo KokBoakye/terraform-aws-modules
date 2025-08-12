@@ -17,3 +17,8 @@ output "bastion_host_public_ip" {
   description = "Public IP of the Bastion Host EC2 instance"
   value       = aws_instance.bastion_host[*].public_ip
 }
+
+output "db_endpoint" {
+  value       = aws_db_instance.postgres.address
+  description = "The endpoint of the RDS database"
+}

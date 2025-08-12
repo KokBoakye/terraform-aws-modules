@@ -97,7 +97,7 @@ resource "aws_lb" "project_x_lb" {
     load_balancer_type = "application"
     subnets = aws_subnet.public_subnet[*].public_subnet_ids
     security_groups = [var.web_sg_id]
-    name = "project_x_lb"
+    name = "project-x-lb"
 }
 
 resource "aws_lb_listener" "project_x_listener" {

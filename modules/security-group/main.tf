@@ -48,7 +48,7 @@ resource "aws_security_group" "app_sg" {
         protocol = "tcp"
         from_port = var.app_port
         to_port = var.app_port
-        security_groups = [aws_security_group.project_x.id]
+        security_groups = [aws_security_group.web_sg.id]
     }
 
     egress {

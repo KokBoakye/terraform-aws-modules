@@ -2,7 +2,7 @@ resource "aws_vpc" "master_vpc" {
     cidr_block = var.vpc_cidr_block
     
     tags = {
-        name = "${var.environment[0]}_${var.user}_vpc"
+        name = "${var.user}_vpc"
     }
 }
 

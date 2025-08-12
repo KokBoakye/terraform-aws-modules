@@ -82,7 +82,7 @@ resource "aws_db_instance" "db_instance" {
     username = var.db_username
     password = var.db_password 
     db_subnet_group_name = var.private_db_subnet_group
-    vpc_security_group_ids = [var.private_security_group.id]
+    vpc_security_group_ids = [var.db_private_security_group.id]
     skip_final_snapshot = true
     tags = {
         Name = "${var.environment[count.index]}_${var.user}_DB_Instance"

@@ -14,9 +14,15 @@ variable "vpc_id" {
 variable "app_port" {
     description = "Application port for backend (for App SG)"
     type = number
-    default = 8080
+    default = 80
 }
 
 data "http" "my_ip" {
   url = "https://checkip.amazonaws.com"
+}
+
+variable "user" {
+    description = "User for the security group"
+    type = string
+    default = "Kwabena" # Replace with your actual user name
 }

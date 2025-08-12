@@ -81,6 +81,12 @@ variable "private_security_group" {
     type = list(string)
 }
 
+variable "db_private_security_group" {
+    description = "Security group for the private servers"
+    type = list(string)
+}
+
+
 variable "db_username" {
     description = "Username for the database"
     type = string

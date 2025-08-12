@@ -18,7 +18,7 @@ output "public_subnet_ids" {
     value = aws_subnet.public_subnet[*].id
 }
 
-output "private_db_subnet_group" {
+output "private_db_subnet_group_id" {
     description = "The ID of the private DB subnet group"
     value = aws_db_subnet_group.private_db_subnet_group.id
 }

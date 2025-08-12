@@ -95,8 +95,8 @@ resource "aws_route_table_association" "private_route_table_association" {
 resource "aws_lb" "project_x_lb" {
     internal = false
     load_balancer_type = "application"
-    subnets = aws_subnet.public_subnet[*].public_subnet_ids
-    security_groups = [var.web_sg_id]
+    subnets = aws_subnet.public_subnet[*].id
+    security_groups = [var.alb_sg_id]
     name = "project-x-lb"
 }
 

@@ -46,7 +46,7 @@ variable "web_server_instance_ids" {
     type = list(string)
 }
 
-variable "web_sg_id" {
+variable "alb_sg_id" {
     description = "ID of the web security group"
     type = string
 }

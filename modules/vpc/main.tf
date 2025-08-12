@@ -96,7 +96,7 @@ resource "aws_lb" "project_x_lb" {
     internal = false
     load_balancer_type = "application"
     subnets = aws_subnet.public_subnet[*].public_subnet_ids
-    security_groups = [aws_security_group.project_x.id]
+    security_groups = [var.web_sg_id]
     name = "project_x_lb"
 }
 

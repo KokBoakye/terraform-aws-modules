@@ -45,3 +45,8 @@ variable "web_server_instance_ids" {
     description = "List of EC2 instance IDs"
     type = list(string)
 }
+
+variable "web_sg_id" {
+    description = "ID of the web security group"
+    type = string
+}

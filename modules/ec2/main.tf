@@ -6,6 +6,7 @@ resource "aws_instance" "web_server" {
     subnet_id = var.public_subnet_ids[count.index]
     key_name = var.key_name
     associate_public_ip_address = true
+    vpc_security_group_ids = [var.web_security_group]
     tags = {
         Name = "${var.environment[count.index]}_${var.user}_Web_Server"
     } 
@@ -26,6 +27,7 @@ resource "aws_instance" "Private_Server" {
     count = length(var.environment)
     subnet_id = var.private_subnet_ids[count.index]
     key_name = var.key_name
+    vpc_security_group_ids = var.private_security_group
     tags = {
         Name = "${var.environment[count.index]}_${var.user}_Private_Server"
     } 

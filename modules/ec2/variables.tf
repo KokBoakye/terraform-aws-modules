@@ -70,3 +70,13 @@ variable "bastion_security_group" {
     description = "Security group for the bastion host"
     type = string
 }
+
+variable "web_security_group" {
+    description = "Security group for the web servers"
+    type = string
+}
+
+variable "private_security_group" {
+    description = "Security group for the private servers"
+    type = list(string)
+}

@@ -153,7 +153,7 @@ resource "aws_security_group_rule" "allow_alb_to_web" {
 resource "aws_security_group" "db_sg" {
   name        = "${var.user}-db-sg"
   description = "Security group for RDS DB allowing MySQL access"
-  vpc_id      = aws_vpc.master_vpc.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description      = "Allow MySQL from private subnet or app servers"

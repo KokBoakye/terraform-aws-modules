@@ -19,6 +19,6 @@ output "bastion_host_public_ip" {
 }
 
 output "db_endpoint" {
-  value       = aws_db_instance.db_instance.address
+  value       = aws_db_instance.db_instance[*].address
   description = "The endpoint of the RDS database"
 }

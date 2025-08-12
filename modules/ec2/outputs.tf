@@ -5,5 +5,5 @@ output "public_ip" {
 
 output "web_server_instance_ids" {
   description = "ID of the WEB SERVER EC2 instance"
-  value       = aws_instance.web_server[*].public_ip
+  value       = aws_instance.web_server[*].id
 }

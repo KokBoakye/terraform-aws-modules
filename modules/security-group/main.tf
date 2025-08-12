@@ -1,4 +1,4 @@
-resource "aws_security_group" "web_sg" {
+resource "aws_security_group" "project_x" {
     description = "web security group"
     vpc_id = var.vpc_id
     
@@ -60,5 +60,23 @@ resource "aws_security_group" "app_sg" {
     }
     tags = {
         Name = "app-sg"
+    }
+}
+
+resource "aws_lb_target_group" "project_x_target_group" {
+    port     = var.app_port
+    protocol = "HTTP"
+    vpc_id   = var.vpc_id
+
+    health_check {
+        path                = "/"
+        interval            = 30
+        timeout             = 5
+        healthy_threshold  = 2
+        unhealthy_threshold = 2
+    }
+
+    tags = {
+        Name = "project_x_target_group"
     }
 }

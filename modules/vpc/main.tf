@@ -1,5 +1,6 @@
 resource "aws_vpc" "master_vpc" {
     cidr_block = var.vpc_cidr_block
+    
     tags = {
         name = "${var.environment[0]}_${var.user}_vpc"
     }
@@ -89,4 +90,48 @@ resource "aws_route_table_association" "private_route_table_association" {
     count = length(var.environment)
     subnet_id = aws_subnet.private_subnet[count.index].id
     route_table_id = aws_route_table.private_route_table[count.index].id
+}
+
+resource "aws_lb" "project_x_lb" {
+    internal = false
+    load_balancer_type = "application"
+    subnets = aws_subnet.public_subnet[*].public_subnet_ids
+    security_groups = [aws_security_group.project_x.id]
+    name = "project_x_lb"
+}
+
+resource "aws_lb_listener" "project_x_listener" {
+    load_balancer_arn = aws_lb.project_x_lb.arn
+    port = 80
+    protocol = "HTTP"
+
+    default_action {
+        type = "forward"
+        target_group_arn = aws_lb_target_group.project_x_target_group.arn
+    }
+}
+
+resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
+    count = length(var.environment)
+    target_group_arn = aws_lb_target_group.project_x_target_group.arn
+    target_id = var.web_server_instance_ids[count.index]
+    port = 80
+}
+
+resource "aws_lb_target_group" "project_x_target_group" {
+    port     = 80
+    protocol = "HTTP"
+    vpc_id   = aws_vpc.master_vpc.id
+
+    health_check {
+        path                = "/"
+        interval            = 30
+        timeout             = 5
+        healthy_threshold  = 2
+        unhealthy_threshold = 2
+    }
+
+    tags = {
+        Name = "project_x_target_group"
+    }
 }

@@ -31,7 +31,7 @@ resource "aws_instance" "Private_Server" {
     user_data = <<-EOF
         #!/bin/bash
         sudo apt-get update -y
-        sudo apt-get install -y apache
+        sudo apt-get install -y apache2
         sudo systemctl start apache2
         sudo systemctl enable apache2
         sudo echo "<h1>Hello from $(var.environment[count.index]) Private Web Server</h1>" > /var/www/html/index.html

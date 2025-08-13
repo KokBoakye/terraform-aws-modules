@@ -140,8 +140,8 @@ resource "aws_db_instance" "db_instance" {
     count = length(var.environment)
     identifier = "${var.environment[count.index]}-db-instance"
     instance_class = "db.t3.micro"
-    engine = "mysql"
-    engine_version = "8.0"
+    engine = "postgres"
+    engine_version = "15.4"
     allocated_storage = 20
     storage_type = "gp2"
     username = var.db_username

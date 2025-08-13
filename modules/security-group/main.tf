@@ -11,11 +11,11 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
-    description = "SSH from my IP"
+    description = "SSH"
     protocol    = "tcp"
     from_port   = 22
     to_port     = 22
-    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    cidr_blocks = ["90.192.44.224/32"]
   }
 
   egress {

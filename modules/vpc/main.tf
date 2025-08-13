@@ -130,7 +130,7 @@ resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
 }
 
 resource "aws_lb_target_group" "project_x_target_group" {
-    port     = 5000
+    port     = 80
     protocol = "HTTP"
     vpc_id   = aws_vpc.master_vpc.id
 

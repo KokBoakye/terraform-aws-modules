@@ -90,13 +90,13 @@ variable "db_private_security_group" {
 variable "db_username" {
     description = "Username for the database"
     type = string
-    default = "admin"
+    default = "kwabsel"
 }
 
 variable "db_password" {
     description = "Password for the database"
     type = string
-    default = "password123" # Replace with your actual password
+    default = "19-10-24" 
 }
 
 variable "private_db_subnet_group" {

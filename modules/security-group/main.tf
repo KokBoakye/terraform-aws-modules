@@ -3,41 +3,35 @@ resource "aws_security_group" "web_sg" {
     vpc_id = var.vpc_id
     
     ingress {
-        description = "ssh"
-        protocol    = "tcp"
-        from_port   = 22
-        to_port     = 22
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+    description = "HTTP from ALB"
+    protocol    = "tcp"
+    from_port   = 5000  # Flask app port inside Docker
+    to_port     = 5000
+    security_groups = [aws_security_group.alb_sg.id]
+  }
 
-    ingress {
-        description = "http from Load Balancer"
-        protocol = "tcp"
-        from_port = 80
-        to_port = 80
-        security_groups = [aws_security_group.alb_sg.id]
-    }
+  ingress {
+    description = "SSH from my IP"
+    protocol    = "tcp"
+    from_port   = 22
+    to_port     = 22
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+  }
 
-    ingress {
-        description = "https from Load Balancer"
-        protocol = "tcp"
-        from_port = 443
-        to_port = 443
-        security_groups = [aws_security_group.alb_sg.id]  
-    }
-    egress {
-        description = "all"
-        protocol = "-1"
-        from_port = 0
-        to_port = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+  egress {
+    description = "All outbound"
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-    tags = {
-        Name = "web-sg"
-    }
-
+  tags = {
+    Name = "web-sg"
+  }
 }
+
+
 
 resource "aws_security_group" "app_sg" {
     description = "app security group"
@@ -143,12 +137,22 @@ resource "aws_security_group" "bastion_sg" {
 
 resource "aws_security_group_rule" "allow_alb_to_web" {
     type              = "ingress"
-    from_port        = 22
-    to_port          = 22
+    from_port        = 5000
+    to_port          = 5000
     protocol         = "tcp"
-    security_group_id = aws_security_group.app_sg.id
-    source_security_group_id = aws_security_group.bastion_sg.id
+    security_group_id = aws_security_group.web_sg.id
+    source_security_group_id = aws_security_group.alb_sg.id
 }
+
+resource "aws_security_group_rule" "web_to_db" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.db_sg.id
+  source_security_group_id = aws_security_group.web_sg.id
+}
+
 
 resource "aws_security_group" "db_sg" {
   name        = "${var.user}-db-sg"
@@ -161,7 +165,7 @@ resource "aws_security_group" "db_sg" {
     to_port          = 3306
     protocol         = "tcp"
     
-    security_groups = [aws_security_group.app_sg.id]
+    security_groups = [aws_security_group.web_sg.id]
   }
 
   egress {

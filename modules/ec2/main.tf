@@ -64,7 +64,7 @@ resource "aws_instance" "web_server" {
     pip3 install --upgrade pip
 
     # Install Flask
-    pip3 install flask
+    sudo pip3 install flask
 
     # Verify installation
     python3 -m flask --version

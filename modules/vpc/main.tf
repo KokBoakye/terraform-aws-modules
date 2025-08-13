@@ -102,7 +102,7 @@ resource "aws_lb" "project_x_lb" {
 
 resource "aws_lb_listener" "project_x_listener" {
     load_balancer_arn = aws_lb.project_x_lb.arn
-    port = 80
+    port = 8080
     protocol = "HTTP"
 
     default_action {
@@ -110,6 +110,17 @@ resource "aws_lb_listener" "project_x_listener" {
         target_group_arn = aws_lb_target_group.project_x_target_group.arn
     }
 }
+
+# resource "aws_lb_listener" "project_x_listener" {
+#     load_balancer_arn = aws_lb.project_x_lb.arn
+#     port = 80
+#     protocol = "HTTP"
+
+#     default_action {
+#         type = "forward"
+#         target_group_arn = aws_lb_target_group.project_x_target_group.arn
+#     }
+# }
 
 resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
     count = length(var.environment)

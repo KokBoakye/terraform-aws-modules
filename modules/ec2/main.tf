@@ -75,6 +75,8 @@ resource "aws_instance" "web_server" {
     # -----------------------------
     rm -rf /tmp/aws /tmp/awscliv2.zip
 
+    sleep 30
+
     # Login to ECR
     aws ecr get-login-password --region eu-north-1 \
         | docker login --username AWS --password-stdin 914559461558.dkr.ecr.eu-north-1.amazonaws.com
@@ -113,26 +115,26 @@ resource "aws_instance" "web_server" {
         
 # }
 
-resource "aws_instance" "bastion_host" {
-    ami = var.instance_ami["ubuntu"]
-    instance_type = var.instance_type[0]
-    subnet_id = var.public_subnet_ids[count.index]
-    associate_public_ip_address = true
-    count = length(var.environment)
-    key_name = var.key_name
-    vpc_security_group_ids = [var.bastion_security_group]
-    tags = {
-        Name = "${var.environment[count.index]}_${var.user}_Bastion_Host"
-    } 
-    user_data = <<-EOF
-        #!/bin/bash
-        sudo apt-get update -y
-        sudo apt-get install -y nginx
-        sudo systemctl start nginx
-        sudo systemctl enable nginx
-        sudo echo "<h1>Hello from Bastion Host</h1>" > /var/www/html/index.html
-    EOF
-}
+# resource "aws_instance" "bastion_host" {
+#     ami = var.instance_ami["ubuntu"]
+#     instance_type = var.instance_type[0]
+#     subnet_id = var.public_subnet_ids[count.index]
+#     associate_public_ip_address = true
+#     count = length(var.environment)
+#     key_name = var.key_name
+#     vpc_security_group_ids = [var.bastion_security_group]
+#     tags = {
+#         Name = "${var.environment[count.index]}_${var.user}_Bastion_Host"
+#     } 
+#     user_data = <<-EOF
+#         #!/bin/bash
+#         sudo apt-get update -y
+#         sudo apt-get install -y nginx
+#         sudo systemctl start nginx
+#         sudo systemctl enable nginx
+#         sudo echo "<h1>Hello from Bastion Host</h1>" > /var/www/html/index.html
+#     EOF
+# }
 
 resource "aws_db_instance" "db_instance" {
     count = length(var.environment)

@@ -115,7 +115,7 @@ resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
     count = length(var.environment)
     target_group_arn = aws_lb_target_group.project_x_target_group.arn
     target_id = var.web_server_instance_ids[count.index]
-    port = 80
+    port = 5000
 }
 
 resource "aws_lb_target_group" "project_x_target_group" {

@@ -7,6 +7,7 @@ resource "aws_instance" "web_server" {
     key_name = var.key_name
     associate_public_ip_address = true
     vpc_security_group_ids = [var.web_security_group]
+    iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
     tags = {
         Name = "${var.environment[count.index]}_${var.user}_Web_Server"
     } 
@@ -64,7 +65,7 @@ resource "aws_instance" "web_server" {
     pip3 install --upgrade pip
 
     # Install Flask
-    sudo pip3 install flask
+    sudo apt install python3-flask -y
 
     # Verify installation
     python3 -m flask --version
@@ -74,7 +75,17 @@ resource "aws_instance" "web_server" {
     # -----------------------------
     rm -rf /tmp/aws /tmp/awscliv2.zip
 
-    echo "Docker, AWS CLI, and Flask installation complete."
+    # Login to ECR
+    aws ecr get-login-password --region eu-north-1 \
+        | docker login --username AWS --password-stdin 914559461558.dkr.ecr.eu-north-1.amazonaws.com
+
+    # Pull the Flask app image
+    docker pull 914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
+
+    # Run the Flask container
+    docker run -d -p 5000:5000 914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
+
+    echo "Flask app container started on port 5000"
 
 
         EOF
@@ -139,4 +150,29 @@ resource "aws_db_instance" "db_instance" {
     tags = {
         Name = "${var.environment[count.index]}_${var.user}_DB_Instance"
     }
+}
+
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2-flask-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_read" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2-flask-profile"
+  role = aws_iam_role.ec2_role.name
 }

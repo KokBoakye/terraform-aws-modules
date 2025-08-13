@@ -100,7 +100,7 @@ resource "aws_lb" "project_x_lb" {
     name = "project-x-lb"
 }
 
-resource "aws_lb_listener" "project_x_listener" {
+resource "aws_lb_listener" "project_x_listener1" {
     load_balancer_arn = aws_lb.project_x_lb.arn
     port = 8080
     protocol = "HTTP"

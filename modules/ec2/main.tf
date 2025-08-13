@@ -11,51 +11,36 @@ resource "aws_instance" "web_server" {
         Name = "${var.environment[count.index]}_${var.user}_Web_Server"
     } 
     user_data = <<-EOF
-    user_data = <<-EOF
     #!/bin/bash
-
-    # -----------------------
-    # Redirect all output to a log file
-    # -----------------------
     exec > /var/log/user-data.log 2>&1
     set -e
 
-    # -----------------------
     # Update system and install dependencies
-    # -----------------------
     apt update -y
     apt install -y unzip curl python3 python3-pip ca-certificates lsb-release gnupg docker.io
 
-    # -----------------------
     # Install AWS CLI v2
-    # -----------------------
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
     unzip /tmp/awscliv2.zip -d /tmp
     /tmp/aws/install
     aws --version
 
-    # -----------------------
     # Enable and start Docker
-    # -----------------------
     systemctl enable docker
     systemctl start docker
+    sleep 5
+    systemctl status docker
 
-    # -----------------------
     # Install Flask
-    # -----------------------
     pip3 install --upgrade pip
     pip3 install flask
 
-    # -----------------------
     # Confirm installations
-    # -----------------------
     docker --version
     python3 --version
     pip3 show flask
 
     EOF
-
-
       
 }
 

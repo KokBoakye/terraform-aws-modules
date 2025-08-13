@@ -129,6 +129,24 @@ resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
     port = 5000
 }
 
+resource "aws_lb_target_group" "main_x_target_group" {
+    port     = 5000
+    protocol = "HTTP"
+    vpc_id   = aws_vpc.master_vpc.id
+
+    health_check {
+        path                = "/"
+        interval            = 30
+        timeout             = 5
+        healthy_threshold  = 2
+        unhealthy_threshold = 2
+    }
+
+    tags = {
+        Name = "project_x_target_group"
+    }
+}
+
 # # resource "aws_lb_target_group" "project_x_target_group" {
 # #     port     = 80
 # #     protocol = "HTTP"

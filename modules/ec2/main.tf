@@ -11,54 +11,50 @@ resource "aws_instance" "web_server" {
         Name = "${var.environment[count.index]}_${var.user}_Web_Server"
     } 
     user_data = <<-EOF
+    user_data = <<-EOF
     #!/bin/bash
-set -e
 
-# -------------------------------
-# Update system
-# -------------------------------
-apt-get update -y
-apt-get upgrade -y
-apt-get install -y curl unzip gnupg lsb-release software-properties-common python3 python3-pip git
+    # -----------------------
+    # Redirect all output to a log file
+    # -----------------------
+    exec > /var/log/user-data.log 2>&1
+    set -e
 
-# -------------------------------
-# Install AWS CLI v2
-# -------------------------------
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip /tmp/awscliv2.zip -d /tmp
-/tmp/aws/install
-rm -rf /tmp/aws /tmp/awscliv2.zip
-aws --version
+    # -----------------------
+    # Update system and install dependencies
+    # -----------------------
+    apt update -y
+    apt install -y unzip curl python3 python3-pip ca-certificates lsb-release gnupg docker.io
 
-# -------------------------------
-# Install Docker
-# -------------------------------
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-    | tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt-get update -y
-apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-systemctl enable docker
-systemctl start docker
-usermod -aG docker ubuntu
-docker --version
+    # -----------------------
+    # Install AWS CLI v2
+    # -----------------------
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+    unzip /tmp/awscliv2.zip -d /tmp
+    /tmp/aws/install
+    aws --version
 
-# -------------------------------
-# Login to AWS ECR
-# -------------------------------
-aws ecr get-login-password --region eu-north-1 | sudo docker login --username AWS --password-stdin 914559461558.dkr.ecr.eu-north-1.amazonaws.com
+    # -----------------------
+    # Enable and start Docker
+    # -----------------------
+    systemctl enable docker
+    systemctl start docker
 
-# -------------------------------
-# Pull Docker image from ECR
-# -------------------------------
-sudo docker pull 914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
+    # -----------------------
+    # Install Flask
+    # -----------------------
+    pip3 install --upgrade pip
+    pip3 install flask
 
-# -------------------------------
-# Run Docker container
-# -------------------------------
-sudo docker run -d -p 80:5000 914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
+    # -----------------------
+    # Confirm installations
+    # -----------------------
+    docker --version
+    python3 --version
+    pip3 show flask
 
-EOF
+    EOF
+
 
       
 }

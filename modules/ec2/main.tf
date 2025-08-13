@@ -141,7 +141,7 @@ resource "aws_db_instance" "db_instance" {
     identifier = "${var.environment[count.index]}-db-instance"
     instance_class = "db.t3.micro"
     engine = "postgres"
-    engine_version = "15.4"
+    engine_version = "16.9"
     allocated_storage = 20
     storage_type = "gp2"
     username = var.db_username

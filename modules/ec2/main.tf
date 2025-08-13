@@ -12,58 +12,95 @@ resource "aws_instance" "web_server" {
     } 
     user_data = <<-EOF
     #!/bin/bash
-    exec > /var/log/user-data.log 2>&1
-    set -e
+    # Update packages
+    apt update -y && apt upgrade -y
 
-    # Update system and install dependencies
+    # -----------------------------
+    # Install Docker
+    # -----------------------------
+    # Install dependencies
+    apt install -y apt-transport-https ca-certificates curl software-properties-common unzip
+
+    # Add Docker's official GPG key
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    # Add Docker repository
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # Update packages again and install Docker
     apt update -y
-    apt install -y unzip curl python3 python3-pip ca-certificates lsb-release gnupg docker.io
+    apt install -y docker-ce docker-ce-cli containerd.io
 
+    # Start Docker service
+    systemctl start docker
+
+    # Enable Docker to start on boot
+    systemctl enable docker
+
+    # Add ubuntu user to docker group (optional)
+    usermod -aG docker ubuntu
+
+    # -----------------------------
     # Install AWS CLI v2
+    # -----------------------------
+    # Download AWS CLI v2
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+
+    # Unzip the installer
     unzip /tmp/awscliv2.zip -d /tmp
+
+    # Install AWS CLI
     /tmp/aws/install
+
+    # Verify installation
     aws --version
 
-    # Enable and start Docker
-    systemctl enable docker
-    systemctl start docker
-    sleep 5
-    systemctl status docker
+    # -----------------------------
+    # Install Python3 and Flask
+    # -----------------------------
+    apt install -y python3 python3-pip
+
+    # Upgrade pip
+    pip3 install --upgrade pip
 
     # Install Flask
-    pip3 install --upgrade pip
     pip3 install flask
 
-    # Confirm installations
-    docker --version
-    python3 --version
-    pip3 show flask
+    # Verify installation
+    python3 -m flask --version
 
-    EOF
+    # -----------------------------
+    # Cleanup
+    # -----------------------------
+    rm -rf /tmp/aws /tmp/awscliv2.zip
+
+    echo "Docker, AWS CLI, and Flask installation complete."
+
+
+        EOF
       
 }
 
-resource "aws_instance" "Private_Server" {
-    ami = var.instance_ami["ubuntu"]
-    instance_type = var.instance_type[1]
-    count = length(var.environment)
-    subnet_id = var.private_subnet_ids[count.index]
-    key_name = var.key_name
-    vpc_security_group_ids = var.private_security_group
-    tags = {
-        Name = "${var.environment[count.index]}_${var.user}_Private_Server"
-    } 
-    user_data = <<-EOF
-        #!/bin/bash
-        sudo apt-get update -y
-        sudo apt-get install -y apache2
-        sudo systemctl start apache2
-        sudo systemctl enable apache2
-        sudo echo "<h1>Hello from $(var.environment[count.index]) Private Web Server</h1>" > /var/www/html/index.html
-    EOF
+# resource "aws_instance" "Private_Server" {
+#     ami = var.instance_ami["ubuntu"]
+#     instance_type = var.instance_type[1]
+#     count = length(var.environment)
+#     subnet_id = var.private_subnet_ids[count.index]
+#     key_name = var.key_name
+#     vpc_security_group_ids = var.private_security_group
+#     tags = {
+#         Name = "${var.environment[count.index]}_${var.user}_Private_Server"
+#     } 
+#     user_data = <<-EOF
+#         #!/bin/bash
+#         sudo apt-get update -y
+#         sudo apt-get install -y apache2
+#         sudo systemctl start apache2
+#         sudo systemctl enable apache2
+#         sudo echo "<h1>Hello from $(var.environment[count.index]) Private Web Server</h1>" > /var/www/html/index.html
+#     EOF
         
-}
+# }
 
 resource "aws_instance" "bastion_host" {
     ami = var.instance_ami["ubuntu"]

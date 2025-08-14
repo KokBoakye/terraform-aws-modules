@@ -87,9 +87,9 @@ resource "aws_route_table" "private_route_table" {
 }
 
 resource "aws_route_table_association" "private_route_table_association" {
-    count = length(var.environment)
+    count = length(aws_subnet.private_subnet)
     subnet_id = aws_subnet.private_subnet[count.index].id
-    route_table_id = aws_route_table.private_route_table[count.index].id
+    route_table_id = aws_route_table.private_route_table[floor(count.index/2)].id
 }
 
 resource "aws_lb" "project_x_lb" {
@@ -100,16 +100,7 @@ resource "aws_lb" "project_x_lb" {
     name = "project-x-lb"
 }
 
-# resource "aws_lb_listener" "project_x_listener1" {
-#     load_balancer_arn = aws_lb.project_x_lb.arn
-#     port = 8080
-#     protocol = "HTTP"
 
-#     default_action {
-#         type = "forward"
-#         target_group_arn = aws_lb_target_group.project_x_target_group.arn
-#     }
-# }
 
 resource "aws_lb_listener" "project_x_listener" {
     load_balancer_arn = aws_lb.project_x_lb.arn
@@ -147,41 +138,7 @@ resource "aws_lb_target_group" "main_x_target_group" {
     }
 }
 
-# resource "aws_lb_target_group" "project_x_target_group" {
-#     port     = 80
-#     protocol = "HTTP"
-#     vpc_id   = aws_vpc.master_vpc.id
 
-#     health_check {
-#         path                = "/"
-#         interval            = 30
-#         timeout             = 5
-#         healthy_threshold  = 2
-#         unhealthy_threshold = 2
-#     }
-
-#     tags = {
-#         Name = "project_x_target_group"
-#     }
-# }
-
-# resource "aws_lb_target_group" "new_x_target_group" {
-#     port     = 2000
-#     protocol = "HTTP"
-#     vpc_id   = aws_vpc.master_vpc.id
-
-#     health_check {
-#         path                = "/"
-#         interval            = 30
-#         timeout             = 5
-#         healthy_threshold  = 2
-#         unhealthy_threshold = 2
-#     }
-
-#     tags = {
-#         Name = "project_x_target_group"
-#     }
-# }
 
 resource "aws_db_subnet_group" "private_db_subnet_group" {
     name       = "project-x-db-subnet-group"

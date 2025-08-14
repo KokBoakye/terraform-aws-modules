@@ -5,8 +5,8 @@ resource "aws_security_group" "web_sg" {
     ingress {
     description = "HTTP from ALB"
     protocol    = "tcp"
-    from_port   = 8000  # Flask app port inside Docker
-    to_port     = 8000
+    from_port   = 80  # Flask app port inside Docker
+    to_port     = 80
     security_groups = [aws_security_group.alb_sg.id]
   }
 

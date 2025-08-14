@@ -84,16 +84,11 @@ resource "aws_instance" "web_server" {
     # Pull the Flask app image
     docker pull 914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
 
-    # Run the Flask container
-    docker run -d \
-    -p 8000:8000 \
-    -e DB_HOST="${aws_db_instance.db_instance[count.index].address}" \ 
-    -e DB_USER="${var.db_username}" \
-    -e DB_PASSWORD="${var.db_password}" \
-    -e DB_NAME="appdb" \
-    914559461558.dkr.ecr.eu-north-1.amazonaws.com/myflaskapp:latest
+    # Pull the Nginx image
+    docker pull 914559461558.dkr.ecr.eu-north-1.amazonaws.com/mynginx:latest
 
 
+    
     echo "Flask app container started on port 5000"
 
 

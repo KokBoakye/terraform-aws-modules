@@ -1,0 +1,8 @@
+version: 2
+updates:
+ 
+  # Terraform modules/providers
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "weekly"

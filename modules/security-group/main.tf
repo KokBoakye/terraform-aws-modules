@@ -123,12 +123,12 @@ resource "aws_security_group" "bastion_sg" {
 
     }
     ingress {
-  description      = "Allow PostgresSQL from bastion"
-  from_port        = 5432
-  to_port          = 5432
-  protocol         = "tcp"
-  security_groups  = [aws_security_group.bastion_sg.id]
-  }
+    description      = "Allow PostgresSQL from bastion"
+    from_port        = 5432
+    to_port          = 5432
+    protocol         = "tcp"
+    cidr_blocks = ["0.0.0.0/32"]
+    }
 
     egress {
         description = "All outbound traffic"

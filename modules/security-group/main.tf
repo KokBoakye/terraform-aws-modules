@@ -5,8 +5,8 @@ resource "aws_security_group" "web_sg" {
     ingress {
     description = "HTTP from ALB"
     protocol    = "tcp"
-    from_port   = 5000  # Flask app port inside Docker
-    to_port     = 5000
+    from_port   = 8000  # Flask app port inside Docker
+    to_port     = 8000
     security_groups = [aws_security_group.alb_sg.id]
   }
 
@@ -33,29 +33,29 @@ resource "aws_security_group" "web_sg" {
 
 
 
-resource "aws_security_group" "app_sg" {
-    description = "app security group"
-    vpc_id = var.vpc_id
+# resource "aws_security_group" "app_sg" {
+#     description = "app security group"
+#     vpc_id = var.vpc_id
     
-    ingress {
-        description = "app port from web SG"
-        protocol = "tcp"
-        from_port = var.app_port
-        to_port = var.app_port
-        security_groups = [aws_security_group.web_sg.id]
-    }
+#     ingress {
+#         description = "app port from web SG"
+#         protocol = "tcp"
+#         from_port = var.app_port
+#         to_port = var.app_port
+#         security_groups = [aws_security_group.web_sg.id]
+#     }
 
-    egress {
-        description = "all"
-        protocol = "-1"
-        from_port = 0
-        to_port = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    tags = {
-        Name = "app-sg-${var.user}"
-    }
-}
+#     egress {
+#         description = "all"
+#         protocol = "-1"
+#         from_port = 0
+#         to_port = 0
+#         cidr_blocks = ["0.0.0.0/0"]
+#     }
+#     tags = {
+#         Name = "app-sg-${var.user}"
+#     }
+# }
 
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
@@ -92,24 +92,6 @@ resource "aws_security_group" "alb_sg" {
 }
 
 
-# resource "aws_lb_target_group" "project_x_target_group" {
-#     port     = var.app_port
-#     protocol = "HTTP"
-#     vpc_id   = var.vpc_id
-
-#     health_check {
-#         path                = "/"
-#         interval            = 30
-#         timeout             = 5
-#         healthy_threshold  = 2
-#         unhealthy_threshold = 2
-#     }
-
-#     tags = {
-#         Name = "project_x_target_group"
-#     }
-# }
-
 resource "aws_security_group" "bastion_sg" {
     description = "Security group for the bastion host"
     vpc_id = var.vpc_id
@@ -119,7 +101,7 @@ resource "aws_security_group" "bastion_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        cidr_blocks = ["90.192.44.224/32"] # Replace with your actual IP
+        cidr_blocks = ["90.192.44.224/32"] 
 
     }
     ingress {

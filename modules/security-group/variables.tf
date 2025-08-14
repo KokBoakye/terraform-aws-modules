@@ -14,7 +14,7 @@ variable "vpc_id" {
 variable "app_port" {
     description = "Application port for backend (for App SG)"
     type = number
-    default = 5000
+    default = 8000
 }
 
 data "http" "my_ip" {

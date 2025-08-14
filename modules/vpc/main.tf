@@ -26,7 +26,7 @@ resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.master_vpc.id
   cidr_block = var.private_subnet_cidr_block[count.index]
 
-  # Assign AZ based on environment index (integer division)
+
   availability_zone = var.availability_zones[floor(count.index / 2)]
 
   tags = {
@@ -117,11 +117,11 @@ resource "aws_lb_target_group_attachment" "project_x_target_attachment" {
     count = length(var.environment)
     target_group_arn = aws_lb_target_group.main_x_target_group.arn
     target_id = var.web_server_instance_ids[count.index]
-    port = 5000
+    port = 8000
 }
 
 resource "aws_lb_target_group" "main_x_target_group" {
-    port     = 5000
+    port     = 8000
     protocol = "HTTP"
     vpc_id   = aws_vpc.master_vpc.id
 

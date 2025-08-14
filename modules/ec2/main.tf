@@ -86,8 +86,8 @@ resource "aws_instance" "web_server" {
 
     # Run the Flask container
     docker run -d \
-    -p 5000:5000 \
-    -e DB_HOST="${aws_db_instance.db_instance[count.index].address}" \ \
+    -p 8000:8000 \
+    -e DB_HOST="${aws_db_instance.db_instance[count.index].address}" \ 
     -e DB_USER="${var.db_username}" \
     -e DB_PASSWORD="${var.db_password}" \
     -e DB_NAME="appdb" \

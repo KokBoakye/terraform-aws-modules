@@ -118,7 +118,7 @@ resource "aws_lb" "project_x_lb" {
 #     target_group_arn = aws_lb_target_group.main_x_target_group.arn
 #     target_id = var.web_server_instance_ids[count.index]
 #     port = 8000
-}
+# }
 
 # resource "aws_lb_target_group" "main_x_target_group" {
 #     port     = 8000

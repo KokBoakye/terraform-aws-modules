@@ -76,10 +76,10 @@ variable "web_security_group" {
     type = string
 }
 
-variable "private_security_group" {
-    description = "Security group for the private servers"
-    type = list(string)
-}
+# variable "private_security_group" {
+#     description = "Security group for the private servers"
+#     type = list(string)
+# }
 
 variable "db_private_security_group" {
     description = "Security group for the private servers"

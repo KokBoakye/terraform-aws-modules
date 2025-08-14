@@ -155,7 +155,7 @@ resource "aws_security_group" "db_sg" {
     to_port          = 5432
     protocol         = "tcp"
     
-    security_groups = [aws_security_group.bastion_sg.id]
+    security_groups = [aws_security_group.web_sg.id]
   }
 
   egress {

@@ -119,7 +119,7 @@ resource "aws_security_group" "bastion_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"] # Replace with your actual IP
+        cidr_blocks = ["90.192.44.224 /32"] # Replace with your actual IP
 
     }
     ingress {
@@ -155,7 +155,7 @@ resource "aws_security_group" "db_sg" {
     to_port          = 5432
     protocol         = "tcp"
     
-    security_groups = [aws_security_group.web_sg.id]
+    security_groups = [aws_security_group.bastion_sg.id]
   }
 
   egress {

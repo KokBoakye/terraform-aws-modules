@@ -5,7 +5,7 @@ output "vpc_id" {
 
 output "eip" {
     description = "EIPs for NAT Gateways"
-    value = aws_eip.nat_eip[*].public_ip
+    value = aws_eip.nat_eip.public_ip
 }
 
 output "private_subnet_ids" {
@@ -15,5 +15,5 @@ output "private_subnet_ids" {
 
 output "public_subnet_ids" {
     description = "List of public subnet IDs"
-    value = aws_subnet.public_subnet[*].id
+    value = aws_subnet.public_subnet.id
 }

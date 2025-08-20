@@ -1,12 +1,12 @@
 
 resource "aws_instance" "web_server" {
-    ami = var.instance_ami["ubuntu"]
-    count = length(var.environment)
+    ami = var.instance_ami
+    count = 1
     instance_type = var.instance_type[0]
-    subnet_id = var.public_subnet_ids[count.index]
+    subnet_id = var.public_subnet_ids
     key_name = var.key_name
     tags = {
-        Name = "${var.environment[count.index]}_${var.user}_Web_Server"
+        Name = "${var.environment}_${var.user}_Web_Server"
     } 
     user_data = <<-EOF
         #!/bin/bash
@@ -20,13 +20,13 @@ resource "aws_instance" "web_server" {
 }
 
 resource "aws_instance" "Private_Server" {
-    ami = var.instance_ami["ubuntu"]
-    instance_type = var.instance_type[1]
-    count = length(var.environment)
+    ami = var.instance_ami
+    instance_type = var.instance_type[count.index]
+    count = 1
     subnet_id = var.private_subnet_ids[count.index]
     key_name = var.key_name
     tags = {
-        Name = "${var.environment[count.index]}_${var.user}_Private_Server"
+        Name = "${var.environment}_${var.user}_Private_Server"
     } 
     user_data = <<-EOF
         #!/bin/bash

@@ -131,10 +131,10 @@ resource "aws_lb_listener" "app_listener" {
 }
 
 resource "aws_lb_target_group_attachment" "group_attachment" {
-  for_each = toset(var.instance_id)  # converts list to set
   target_group_arn = aws_lb_target_group.app_tg.arn
-  target_id        = each.value
+  target_id        = var.instance_id  # string
   port             = 80
 }
+
 
 

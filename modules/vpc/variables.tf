@@ -35,3 +35,16 @@ variable "environment" {
     type = string
    
 }
+
+variable "alb_sg" {
+    description = "Security group for the instances"
+    type = string
+    
+  
+}
+
+variable "instance_id" {
+    description = "Instance ID for the instances"
+    type = string
+   
+}

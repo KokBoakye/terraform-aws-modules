@@ -99,7 +99,7 @@ resource "aws_lb" "app_alb" {
   name               = "${var.environment}-${var.user}-alb"
   internal           = true
   load_balancer_type = "application"
-  security_groups    = [var.alb_sg.id]
+  security_groups    = [var.alb_sg]
   subnets           = [aws_subnet.public_subnet.id]
 }
 

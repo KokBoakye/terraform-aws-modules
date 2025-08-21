@@ -48,7 +48,14 @@ variable "key_name" {
     
 }
 
-variable "security_group" {
+variable "web_sg" {
+    description = "Security group for the instances"
+    type = string
+    
+  
+}
+
+variable "app_sg" {
     description = "Security group for the instances"
     type = string
     

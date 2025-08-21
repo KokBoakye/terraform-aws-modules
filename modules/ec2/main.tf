@@ -58,9 +58,8 @@ resource "aws_instance" "web_server" {
 
 resource "aws_instance" "private_server" {
     ami = data.aws_ami.ubuntu.id
-    instance_type = var.instance_type[count.index]
-    count = 1
-    subnet_id = var.private_subnet_ids[count.index]
+    instance_type = var.instance_type[0]
+    subnet_id = var.private_subnet_ids[0]
     key_name = var.key_name
     vpc_security_group_ids = [var.app_sg]
     tags = {

@@ -1,6 +1,21 @@
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
 
 resource "aws_instance" "web_server" {
-    ami = var.instance_ami
+    ami = data.aws_ami.ubuntu.id
     count = 1
     instance_type = var.instance_type[0]
     subnet_id = var.public_subnet_ids
@@ -20,7 +35,7 @@ resource "aws_instance" "web_server" {
 }
 
 resource "aws_instance" "Private_Server" {
-    ami = var.instance_ami
+    ami = data.aws_ami.ubuntu.id
     instance_type = var.instance_type[count.index]
     count = 1
     subnet_id = var.private_subnet_ids[count.index]
@@ -34,7 +49,7 @@ resource "aws_instance" "Private_Server" {
         sudo apt-get install -y apache
         sudo systemctl start apache2
         sudo systemctl enable apache2
-        sudo echo "<h1>Hello from $(var.environment[count.index]) Private Web Server</h1>" > /var/www/html/index.html
+        sudo echo "<h1>Hello from ${var.environment} Private Web Server</h1>" > /var/www/html/index.html
     EOF
         
 }

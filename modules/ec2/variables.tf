@@ -28,18 +28,18 @@ variable "public_subnet_ids" {
     
 }
 
-variable "instance_ami" {
-    description = "Ami for EC2 instances"
-    type = string
-    # default = {
-    #     "ubuntu" = "ami-042b4708b1d05f512"
-    #     "amazon_linux_2" = "ami-0b83c7f5e2823d1f4"
-    #     "windows" = "ami-0b59aaac1a4f1a3d1"
-    #     "macos" = "ami-037aceb0f4efe8b1a"
+# variable "instance_ami" {
+#     description = "Ami for EC2 instances"
+#     type = string
+#     # default = {
+#     #     "ubuntu" = "ami-042b4708b1d05f512"
+#     #     "amazon_linux_2" = "ami-0b83c7f5e2823d1f4"
+#     #     "windows" = "ami-0b59aaac1a4f1a3d1"
+#     #     "macos" = "ami-037aceb0f4efe8b1a"
         
         
-    # }
-}
+#     # }
+# }
 
 variable "environment" {
     description = "Environment for the instances"

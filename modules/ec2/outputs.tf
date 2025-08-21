@@ -5,5 +5,5 @@ output "public_ip" {
 
 output "instance_id" {
   description = "Instance ID of the EC2 instance"
-  value       = aws_instance.private_server.id
+  value       = aws_instance.private_server[*].id
 }

@@ -95,46 +95,7 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_lb" "app_alb" {
-  name               = "${var.environment}-${var.user}-alb"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = [var.alb_sg]
-  subnets           = [aws_subnet.public_subnet.id]
-}
 
-resource "aws_lb_target_group" "app_tg" {
-  name     = "${var.environment}-${var.user}-app-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.master_vpc.id
-
-  health_check {
-    healthy_threshold   = 5
-    unhealthy_threshold = 2
-    timeout             = 5
-    interval            = 10
-    path                = "/"
-  }
-  
-}
-
-resource "aws_lb_listener" "app_listener" {
-  load_balancer_arn = aws_lb.app_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app_tg.arn
-  }
-}
-
-resource "aws_lb_target_group_attachment" "group_attachment" {
-  target_group_arn = aws_lb_target_group.app_tg.arn
-  target_id        = var.instance_id  # string
-  port             = 80
-}
 
 
 

@@ -37,14 +37,7 @@ resource "aws_instance" "private_server" {
     } 
     user_data = <<-EOF
            #!/bin/bash
-
-        # Install, start and enable nginx
-        sudo apt-get update -y
-        sudo apt-get install -y nginx
-        sudo systemctl start nginx
-        sudo systemctl enable nginx
-
-  
+        
         # Install, start and enable docker
         sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -67,14 +60,3 @@ resource "aws_instance" "private_server" {
         
 }
 
-# resource "aws_instance" "bastion" {
-#     ami = data.aws_ami.ubuntu.id
-#     instance_type = var.instance_type[0]
-#     subnet_id = var.public_subnet_ids[0]
-#     key_name = var.key_name
-#     vpc_security_group_ids = [var.bastion_sg]
-#     tags = {
-#         Name = "${var.environment}_${var.user}_Bastion"
-#     }
-  
-# }

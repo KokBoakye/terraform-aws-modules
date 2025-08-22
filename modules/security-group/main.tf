@@ -1,4 +1,4 @@
-resource "aws_security_group" "web_sg" {
+resource "aws_security_group" "app_sg" {
     description = "web security group"
     vpc_id = var.vpc_id
     
@@ -7,7 +7,7 @@ resource "aws_security_group" "web_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        cidr_blocks = ["0.0.0.0/0"]
+        security_groups = [aws_security_group.bastion_sg]
     }
 
     ingress {
@@ -23,34 +23,16 @@ resource "aws_security_group" "web_sg" {
         protocol = "tcp"
         from_port = 443
         to_port = 443
-        security_groups = [aws_security_group.alb_sg.id]    
-}
-    egress {
-        description = "all"
-        protocol = "-1"
-        from_port = 0
-        to_port = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+        security_groups = [aws_security_group.alb_sg.id] 
+    } 
 
-    tags = {
-        Name = "web-sg"
-    }
-
-}
-
-resource "aws_security_group" "app_sg" {
-    description = "app security group"
-    vpc_id = var.vpc_id
-    
     ingress {
-        description = "app port from web SG"
+        description = "https"
         protocol = "tcp"
-        from_port = var.app_port
-        to_port = var.app_port
-        security_groups = [aws_security_group.web_sg.id]
+        from_port = 8080
+        to_port = 8080
+        security_groups = [aws_security_group.alb_sg.id]      
     }
-
     egress {
         description = "all"
         protocol = "-1"
@@ -58,10 +40,36 @@ resource "aws_security_group" "app_sg" {
         to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
     }
+
     tags = {
         Name = "app-sg"
     }
+
 }
+
+# resource "aws_security_group" "app_sg" {
+#     description = "app security group"
+#     vpc_id = var.vpc_id
+    
+#     ingress {
+#         description = "app port from web SG"
+#         protocol = "tcp"
+#         from_port = var.app_port
+#         to_port = var.app_port
+#         security_groups = [aws_security_group.bastion_sg.id]
+#     }
+
+#     egress {
+#         description = "all"
+#         protocol = "-1"
+#         from_port = 0
+#         to_port = 0
+#         cidr_blocks = ["0.0.0.0/0"]
+#     }
+#     tags = {
+#         Name = "app-sg"
+#     }
+# }
 
 resource "aws_security_group" "alb_sg" {
     description = "Allow HTTP and HTTPS traffic"
@@ -81,6 +89,27 @@ resource "aws_security_group" "alb_sg" {
         to_port = 443
         cidr_blocks = ["0.0.0.0/0"]
     }
+    egress {
+        description = "all"
+        protocol = "-1"
+        from_port = 0
+        to_port = 0
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_security_group" "bastion_sg" {
+    description = "bastion security group"
+    vpc_id = var.vpc_id
+
+    ingress {
+        description = "ssh"
+        protocol = "tcp"
+        from_port = 22
+        to_port = 22
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
     egress {
         description = "all"
         protocol = "-1"

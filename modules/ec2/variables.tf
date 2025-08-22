@@ -61,3 +61,9 @@ variable "app_sg" {
     
   
 }
+
+variable "bastion_sg" {
+    description = "Security group for the instances"
+    type = string
+    
+}

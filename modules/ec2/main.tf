@@ -14,18 +14,29 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "web_server" {
+resource "aws_instance" "bastion" {
     ami = data.aws_ami.ubuntu.id
-    count = 1
     instance_type = var.instance_type[0]
     subnet_id = var.public_subnet_ids[0]
     key_name = var.key_name
-    vpc_security_group_ids = [var.web_sg]
+    vpc_security_group_ids = [var.bastion_sg]
     tags = {
         Name = "${var.environment}_${var.user}_Web_Server"
     } 
+    
+}
+
+resource "aws_instance" "private_server" {
+    ami = data.aws_ami.ubuntu.id
+    instance_type = var.instance_type[0]
+    subnet_id = var.private_subnet_ids[0]
+    key_name = var.key_name
+    vpc_security_group_ids = [var.app_sg]
+    tags = {
+        Name = "${var.environment}_${var.user}_Private_Server"
+    } 
     user_data = <<-EOF
-        #!/bin/bash
+           #!/bin/bash
 
         # Install, start and enable nginx
         sudo apt-get update -y
@@ -53,25 +64,17 @@ resource "aws_instance" "web_server" {
        
         
     EOF
-      
-}
-
-resource "aws_instance" "private_server" {
-    ami = data.aws_ami.ubuntu.id
-    instance_type = var.instance_type[0]
-    subnet_id = var.private_subnet_ids[0]
-    key_name = var.key_name
-    vpc_security_group_ids = [var.app_sg]
-    tags = {
-        Name = "${var.environment}_${var.user}_Private_Server"
-    } 
-    user_data = <<-EOF
-        #!/bin/bash
-        sudo apt-get update -y
-        sudo apt-get install -y apache
-        sudo systemctl start apache2
-        sudo systemctl enable apache2
-        sudo echo "<h1>Hello from ${var.environment} Private Web Server</h1>" > /var/www/html/index.html
-    EOF
         
 }
+
+# resource "aws_instance" "bastion" {
+#     ami = data.aws_ami.ubuntu.id
+#     instance_type = var.instance_type[0]
+#     subnet_id = var.public_subnet_ids[0]
+#     key_name = var.key_name
+#     vpc_security_group_ids = [var.bastion_sg]
+#     tags = {
+#         Name = "${var.environment}_${var.user}_Bastion"
+#     }
+  
+# }

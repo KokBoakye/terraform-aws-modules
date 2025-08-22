@@ -18,7 +18,7 @@ resource "aws_instance" "web_server" {
     ami = data.aws_ami.ubuntu.id
     count = 1
     instance_type = var.instance_type[0]
-    subnet_id = var.public_subnet_ids
+    subnet_id = var.public_subnet_ids[0]
     key_name = var.key_name
     vpc_security_group_ids = [var.web_sg]
     tags = {

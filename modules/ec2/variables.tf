@@ -24,7 +24,7 @@ variable "private_subnet_ids" {
 
 variable "public_subnet_ids" {
     description = "Public Subnet ID where the web servers will be launched"
-    type = string
+    type = list(string)
     
 }
 

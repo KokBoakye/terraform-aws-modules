@@ -47,29 +47,7 @@ resource "aws_security_group" "app_sg" {
 
 }
 
-# resource "aws_security_group" "app_sg" {
-#     description = "app security group"
-#     vpc_id = var.vpc_id
-    
-#     ingress {
-#         description = "app port from web SG"
-#         protocol = "tcp"
-#         from_port = var.app_port
-#         to_port = var.app_port
-#         security_groups = [aws_security_group.bastion_sg.id]
-#     }
 
-#     egress {
-#         description = "all"
-#         protocol = "-1"
-#         from_port = 0
-#         to_port = 0
-#         cidr_blocks = ["0.0.0.0/0"]
-#     }
-#     tags = {
-#         Name = "app-sg"
-#     }
-# }
 
 resource "aws_security_group" "alb_sg" {
     description = "Allow HTTP and HTTPS traffic"

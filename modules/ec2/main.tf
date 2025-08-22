@@ -21,7 +21,7 @@ resource "aws_instance" "bastion" {
     key_name = var.key_name
     vpc_security_group_ids = [var.bastion_sg]
     tags = {
-        Name = "${var.environment}_${var.user}_Web_Server"
+        Name = "${var.environment}_${var.user}_bastion_host"
     } 
     
 }

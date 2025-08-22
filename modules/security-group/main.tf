@@ -7,7 +7,7 @@ resource "aws_security_group" "app_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        security_groups = [aws_security_group.bastion_sg]
+        security_groups = [aws_security_group.bastion.id]
     }
 
     ingress {

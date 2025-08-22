@@ -6,7 +6,7 @@ variable "vpc_cidr_block" {
 
 variable "public_subnet_cidr_block" {
     description = "CIDR block for the subnets"
-    type = string
+    type = list(string)
     
 }
 
@@ -36,15 +36,3 @@ variable "environment" {
    
 }
 
-# variable "alb_sg" {
-#     description = "Security group for the instances"
-#     type = string
-    
-  
-# }
-
-# variable "instance_id" {
-#     description = "Instance ID for the instances"
-#     type = string
-   
-# }

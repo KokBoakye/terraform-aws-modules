@@ -9,7 +9,8 @@ resource "aws_vpc" "master_vpc" {
 # One public subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id     = aws_vpc.master_vpc.id
-  cidr_block = var.public_subnet_cidr_block
+  count = 2
+  cidr_block = var.public_subnet_cidr_block[count.index]
   map_public_ip_on_launch = true
   
 
@@ -37,7 +38,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 
-# Single NAT Gateway
+#  NAT Gateway
 resource "aws_eip" "nat_eip" {
   
 
@@ -48,7 +49,7 @@ resource "aws_eip" "nat_eip" {
 
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnet.id
+  subnet_id     = aws_subnet.public_subnet[0].id
   depends_on    = [aws_internet_gateway.internet_gateway]
 
   tags = {
@@ -71,7 +72,8 @@ resource "aws_route_table" "public_route_table" {
 }
 
 resource "aws_route_table_association" "public_route_table_association" {
-  subnet_id      = aws_subnet.public_subnet.id
+  count          = length(aws_subnet.public_subnet)
+  subnet_id      = aws_subnet.public_subnet[count.index].id
   route_table_id = aws_route_table.public_route_table.id
 }
 
